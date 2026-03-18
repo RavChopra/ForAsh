@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Ash, with love ♥</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose:    #f43f5e;
+      --rose-lt: #fb7185;
+      --blush:   #fda4af;
+      --cream:   #fff1f2;
+      --mauve:   #9f1239;
+      --warm-bg: #1a0a0e;
+      --card-bg: #220d13;
+      --border:  rgba(244,63,94,0.18);
+      --text:    #fce7ea;
+      --muted:   #c09098;
+      --deep:    #150608;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--warm-bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── FLOATING HEARTS ── */
+    .hearts-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      font-size: 18px;
+      opacity: 0;
+      animation: floatHeart linear infinite;
+    }
+    @keyframes floatHeart {
+      0%   { transform: translateY(0) rotate(-10deg) scale(0.8); opacity: 0; }
+      10%  { opacity: 0.35; }
+      90%  { opacity: 0.12; }
+      100% { transform: translateY(-110vh) rotate(15deg) scale(1.1); opacity: 0; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 40px 60px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(244,63,94,0.22) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(159,18,57,0.15) 0%, transparent 50%),
+        linear-gradient(180deg, #1a0508 0%, #150608 100%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--warm-bg));
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--rose-lt);
+      margin-bottom: 28px;
+      opacity: 0.8;
+    }
+
+    .hero-heart {
+      font-size: 52px;
+      margin-bottom: 24px;
+      display: block;
+      animation: pulse 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 24px rgba(244,63,94,0.6));
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.08); }
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.6rem, 7vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff1f2 10%, #fda4af 50%, #f43f5e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--blush);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      opacity: 0.85;
+      line-height: 1.7;
+    }
+
+    .hero-letter {
+      background: rgba(244,63,94,0.07);
+      border: 1px solid rgba(244,63,94,0.2);
+      border-radius: 20px;
+      padding: 32px 40px;
+      max-width: 640px;
+      margin: 0 auto 44px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 15.5px;
+      color: #f9cdd3;
+      line-height: 1.85;
+      text-align: left;
+    }
+    .hero-letter .salutation {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--blush);
+      display: block;
+      margin-bottom: 14px;
+    }
+    .hero-letter .sign-off {
+      display: block;
+      margin-top: 18px;
+      color: var(--rose-lt);
+      font-size: 15px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(244,63,94,0.08);
+      border: 1px solid rgba(244,63,94,0.15);
+      border-radius: 20px;
+      padding: 6px 14px;
+    }
+
+    /* ── CONTENT WRAPPER ── */
+    .content { position: relative; z-index: 1; }
+
+    /* ── STAT ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 14px;
+      padding: 50px 40px 20px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); border-color: rgba(244,63,94,0.4); }
+    .stat-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--rose-lt), var(--blush));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    /* ── SECTION ── */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 30px 40px 50px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(244,63,94,0.12);
+    }
+    .section-icon {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: rgba(244,63,94,0.12);
+      border: 1px solid rgba(244,63,94,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--cream);
+    }
+    .section-byline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .chart-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blush);
+      letter-spacing: 0.3px;
+      margin-bottom: 18px;
+    }
+    .chart-wrap      { position: relative; height: 200px; }
+    .chart-wrap-tall { position: relative; height: 260px; }
+    .full-width { grid-column: 1 / -1; }
+
+    /* ── INSIGHT CARDS ── */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .insight-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .insight-card:hover { transform: translateY(-2px); border-color: rgba(244,63,94,0.35); }
+    .insight-card .tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--rose-lt);
+      margin-bottom: 8px;
+    }
+    .insight-card h4 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .insight-card p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+    .insight-card p strong { color: #f9cdd3; }
+
+    /* ── INITIATION BAR ── */
+    .initiation-bar {
+      background: #0d0306;
+      border-radius: 20px;
+      height: 16px;
+      overflow: hidden;
+      margin: 14px 0;
+      display: flex;
+    }
+    .fill-rav {
+      height: 100%;
+      background: linear-gradient(90deg, #9f1239, #f43f5e);
+      width: 52.8%;
+    }
+    .fill-ash {
+      height: 100%;
+      background: linear-gradient(90deg, #fb7185, #fda4af);
+      width: 47.2%;
+    }
+    .initiation-labels { display: flex; justify-content: space-between; font-size: 13px; }
+    .label-rav { color: var(--rose-lt); font-weight: 600; }
+    .label-ash { color: var(--blush);   font-weight: 600; }
+
+    /* ── THEME BARS ── */
+    .theme-list { display: flex; flex-direction: column; gap: 13px; }
+    .theme-name { font-size: 13px; color: #f9cdd3; margin-bottom: 5px; display: flex; justify-content: space-between; }
+    .theme-count { font-size: 12px; color: #8a5862; }
+    .theme-bar-bg { background: #0d0306; border-radius: 6px; height: 8px; overflow: hidden; }
+    .theme-bar-fill { height: 100%; border-radius: 6px; }
+
+    /* ── SILENCE ITEMS ── */
+    .silence-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(244,63,94,0.08);
+    }
+    .silence-item:last-child { border-bottom: none; }
+    .silence-badge {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.25);
+      border-radius: 10px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rose-lt);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .silence-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .silence-text strong { color: #f9cdd3; display: block; margin-bottom: 3px; }
+
+    /* ── QUOTE BLOCKS ── */
+    .quotes-section { margin-top: 28px; }
+    .quotes-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--blush);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .quote-block {
+      background: linear-gradient(135deg, rgba(244,63,94,0.06), rgba(159,18,57,0.08));
+      border-left: 3px solid var(--rose);
+      border-radius: 0 14px 14px 0;
+      padding: 20px 22px;
+      margin: 14px 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 15px;
+      color: #f9cdd3;
+      line-height: 1.75;
+    }
+    .quote-block .sender {
+      font-style: normal;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: #8a5862;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* ── LOVE LETTER CLOSING ── */
+    .closing {
+      max-width: 640px;
+      margin: 60px auto 0;
+      padding: 0 40px 80px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .closing-heart { font-size: 36px; display: block; margin-bottom: 20px; animation: pulse 2s ease-in-out infinite; }
+    .closing h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+    .closing p {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.85;
+      margin-bottom: 28px;
+    }
+    .closing-sig {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--rose-lt);
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 30px 40px 40px;
+      color: #5a2a32;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(244,63,94,0.2), transparent);
+      margin: 10px 40px;
+      max-width: 1080px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: #6b1a27; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- FLOATING HEARTS -->
+<div class="hearts-bg" id="heartsContainer"></div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="hero">
+  <p class="hero-eyebrow">A gift, made with love</p>
+  <span class="hero-heart">♥</span>
+  <h1>For Ash</h1>
+  <p class="hero-subtitle">I pulled every message we've ever sent each other — and turned it into this. Just to show you how much us looks like, in numbers.</p>
+
+  <div class="hero-letter">
+    <span class="salutation">Babe,</span>
+    I've been thinking about us a lot lately — about how much we talk, how much we laugh, how much we mean to each other. So I did something a little extra (you know how I am) and actually went back through everything. Every "good morning," every late-night phone call, every time one of us said sorry, every time we made each other smile. It's all in here. This is us. And it's beautiful.
+    <span class="sign-off">— Rav ♥</span>
+  </div>
+
+  <div class="hero-meta">
+    <span>📅 Jul 2023 – Mar 2026</span>
+    <span>💬 75,342 messages</span>
+    <span>📆 ~2.5 years together</span>
+    <span>🔁 1,502 conversations</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ── TOP STATS ── -->
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-number">75,342</span>
+    <span class="stat-label">Words Between Us</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">40,924</span>
+    <span class="stat-label">From You, Ash ♥</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">34,418</span>
+    <span class="stat-label">From Me, Rav</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">8,600+</span>
+    <span class="stat-label">"Babe" Exchanged</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">1,444</span>
+    <span class="stat-label">Times We Said "Love"</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">670</span>
+    <span class="stat-label">Most Msgs in One Day</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SECTION 1: HOW WE TALK -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">💌</div>
+    <div>
+      <div class="section-title">How We Talk</div>
+      <div class="section-byline">The rhythm and patterns behind our conversations</div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- WHO TEXTS FIRST -->
+    <div class="chart-card">
+      <h3>Who Reaches Out First</h3>
+      <p style="font-size:13px;color:#8a5862;margin-bottom:16px;">Across 1,502 conversations — defined as any message after a gap of 3+ hours</p>
+      <div class="initiation-bar">
+        <span class="fill-rav"></span>
+        <span class="fill-ash"></span>
+      </div>
+      <div class="initiation-labels">
+        <span class="label-rav">Rav — 52.8%</span>
+        <span class="label-ash">Ash — 47.2%</span>
+      </div>
+      <p style="font-size:13.5px;color:#9a6570;margin-top:16px;line-height:1.7;font-family:'Playfair Display',Georgia,serif;font-style:italic;">
+        Almost perfectly equal. Neither of us is the one who always chases — we both just want to talk to each other.
+      </p>
+    </div>
+
+    <!-- MESSAGES BY HOUR -->
+    <div class="chart-card">
+      <h3>When We're Most in Sync</h3>
+      <div class="chart-wrap">
+        <canvas id="hourChart"></canvas>
+      </div>
+    </div>
+
+    <!-- MONTHLY VOLUME (FULL WIDTH) -->
+    <div class="chart-card full-width">
+      <h3>The Story of Our Conversations, Month by Month</h3>
+      <div class="chart-wrap-tall">
+        <canvas id="monthChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="tag">🌙 Our Hours</div>
+      <h4>We're Midnight People</h4>
+      <p>Our peak texting hours are <strong>11pm, midnight, and 1am</strong>. When the rest of the world goes quiet, we get louder. I love that about us.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">📅 Saturdays</div>
+      <h4>Quietest Day = Best Day</h4>
+      <p>Saturday is our quietest texting day — and that's because <strong>we're usually actually together</strong>. The silence in our messages means we're making noise in person.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">📈 How Far We've Come</div>
+      <h4>From 350 to 6,700 a Month</h4>
+      <p>We started slow in summer 2023. By October 2024 we hit <strong>6,700 messages in a single month</strong>. We fell into each other without even noticing.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">💬 Our Style</div>
+      <h4>Short, Sweet & Constant</h4>
+      <p>We average <strong>22–27 characters a message</strong> — quick little bursts, not essays. We don't need long paragraphs. We just need to feel close.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SECTION 2: WHAT WE ARE -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">♥️</div>
+    <div>
+      <div class="section-title">What We Are</div>
+      <div class="section-byline">The themes, the feelings, the things we keep coming back to</div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- THEMES -->
+    <div class="chart-card">
+      <h3>What We Talk About Most</h3>
+      <div class="theme-list">
+        <div>
+          <div class="theme-name"><span>♥ Affection — love, miss, babe…</span><span class="theme-count">11,704</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:100%;background:linear-gradient(90deg,#f43f5e,#9f1239);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>🗓️ Making Plans Together</span><span class="theme-count">4,667</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:40%;background:linear-gradient(90deg,#fb7185,#f43f5e);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>😬 Working Through Tension</span><span class="theme-count">3,615</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:31%;background:linear-gradient(90deg,#f97316,#dc2626);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>🍕 Food & Eating Together</span><span class="theme-count">3,330</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:28%;background:linear-gradient(90deg,#fda4af,#fb7185);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>😴 Sleep & Rest</span><span class="theme-count">2,817</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:24%;background:linear-gradient(90deg,#c084fc,#7c3aed);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>📞 Wanting to Hear Your Voice</span><span class="theme-count">2,444</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:21%;background:linear-gradient(90deg,#fbbf24,#d97706);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>💼 Work, Uni & Being Busy</span><span class="theme-count">2,106</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:18%;background:linear-gradient(90deg,#34d399,#059669);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>👨‍👩‍👧 Family</span><span class="theme-count">2,070</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:18%;background:linear-gradient(90deg,#60a5fa,#2563eb);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>😢 Feelings & Emotions</span><span class="theme-count">1,804</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:15%;background:linear-gradient(90deg,#e879f9,#a21caf);"></div></div>
+        </div>
+        <div>
+          <div class="theme-name"><span>👗 Fashion & How You Look</span><span class="theme-count">1,494</span></div>
+          <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:13%;background:linear-gradient(90deg,#fda4af,#9f1239);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SORRY + REACTIONS -->
+    <div class="chart-card" style="display:flex;flex-direction:column;gap:28px;">
+      <div>
+        <h3>Who Says Sorry More</h3>
+        <div class="chart-wrap" style="height:150px;">
+          <canvas id="sorryChart"></canvas>
+        </div>
+        <p style="font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:13.5px;color:#9a6570;margin-top:12px;line-height:1.7;">
+          I say sorry more — 847 times to your 597. That's just me. But I also know you always forgive me. Thank you for that.
+        </p>
+      </div>
+      <div>
+        <h3>Heart Reactions Sent</h3>
+        <div class="chart-wrap" style="height:150px;">
+          <canvas id="reactChart"></canvas>
+        </div>
+        <p style="font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:13.5px;color:#9a6570;margin-top:12px;line-height:1.7;">
+          I react to your messages twice as often as you react to mine — because everything you say makes me feel something.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INSIGHT CARDS -->
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="tag">♥ Number One</div>
+      <h4>Affection Is Our Default</h4>
+      <p>Love, missing each other, calling each other babe — it's in <strong>1 in every 6 messages</strong>. That's not a habit. That's just how much we love each other.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">📞 Always Calling</div>
+      <h4>1,455 Times We Tried to Call</h4>
+      <p>We have <strong>1,455 messages</strong> about calls, FaceTime, signals dropping. Texting was never enough — we always wanted to actually be with each other, even over the phone.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">🌱 Honest & Real</div>
+      <h4>We Work Through It</h4>
+      <p>"Sorry" appears <strong>1,444 times combined</strong>. We argue, we hurt each other sometimes, we say sorry — and then we come back. That's not weakness. That's us.</p>
+    </div>
+    <div class="insight-card">
+      <div class="tag">🌍 Our Whole Lives</div>
+      <h4>Not Just Romance — Everything</h4>
+      <p>Family, work, stress, food, sleep — you know all of it. <strong>You're woven into every part of my life</strong>, and I wouldn't have it any other way.</p>
+    </div>
+  </div>
+
+  <!-- SILENCES -->
+  <div class="chart-card" style="margin-top:22px;">
+    <h3>The Quiet Moments Between Us</h3>
+    <p style="font-size:13px;color:#8a5862;margin-bottom:16px;">Every relationship has pauses. Here are ours — and what came after.</p>
+
+    <div class="silence-item">
+      <div class="silence-badge">12 days</div>
+      <div class="silence-text">
+        <strong>April 11–23, 2025</strong>
+        The longest stretch of quiet in 2.5 years. Your last message: <em>"Aww babe don't be so harsh on urself."</em> Even when things were hard, you were still protecting me.
+      </div>
+    </div>
+    <div class="silence-item">
+      <div class="silence-badge">10 days</div>
+      <div class="silence-text">
+        <strong>Feb 8–18, 2024</strong>
+        You said "Bye." Ten days passed. Then you came back with just one word: <em>"Babe."</em> That single word said everything.
+      </div>
+    </div>
+    <div class="silence-item">
+      <div class="silence-badge">6 days</div>
+      <div class="silence-text">
+        <strong>May 11–17, 2024</strong>
+        Life just got in the way. I came back with "Sorry, in a meeting, call you later" — and just like that, we were back.
+      </div>
+    </div>
+    <div class="silence-item">
+      <div class="silence-badge">4 days</div>
+      <div class="silence-text">
+        <strong>Dec 10–14, 2025</strong>
+        A quiet moment near the end of the year. But we always find our way back to each other.
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTES -->
+  <div class="quotes-section">
+    <p class="quotes-title">Moments I never want to forget</p>
+
+    <div class="quote-block">
+      "Happy new year babe!!! As we cross into another new year together, I just wanted to say…"
+      <span class="sender">— Me, exactly midnight on January 1st, 2025. You replied an hour later with ♥️. I don't know how to tell you how much that meant.</span>
+    </div>
+
+    <div class="quote-block">
+      "Two cheeks of the same arse I swear"
+      <span class="sender">— Me, 1am on June 30, 2024 — because you had eczema and I had neck pain and we were both suffering in the most dramatic way possible. You just replied "😂😂" and I fell in love with you again.</span>
+    </div>
+
+    <div class="quote-block">
+      "I just wanna be in bed with you rn" / "I'll make all your pain go away"
+      <span class="sender">— You, to me, the same night. Even at 1am, across a screen, you just knew what I needed to hear.</span>
+    </div>
+
+    <div class="quote-block">
+      "Well love isn't easy. It's not meant to be either."
+      <span class="sender">— Me, 12:30am on Oct 20, 2025 — our single busiest day ever, with 670 messages. Even in the hard moments, I knew we were worth it.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- CLOSING LOVE LETTER -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="closing">
+  <span class="closing-heart">♥</span>
+  <h2>So here's what the data actually says.</h2>
+  <p>
+    We talk every single day. We check in on each other at midnight. We say babe over 8,000 times. We say sorry when we mess up. We come back after every silence. We share our whole lives — the food, the family drama, the stress, the laughs, the really bad days and the really good ones.
+    <br><br>
+    No algorithm could have told me what I already knew. But now I have proof. In 75,342 messages, in two and a half years, in every little notification — there you are, Ash.
+    <br><br>
+    Always you.
+  </p>
+  <span class="closing-sig">Love, Rav ♥</span>
+</div>
+
+</div><!-- end .content -->
+
+<footer>
+  Made with love · 75,342 messages · Jul 2023 – Mar 2026 · For Ash, always ♥
+</footer>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- CHARTS & HEARTS JS -->
+<!-- ══════════════════════════════════════════════ -->
+<script>
+// ── FLOATING HEARTS ──
+(function() {
+  const container = document.getElementById('heartsContainer');
+  const heartChars = ['♥','♡','❤','💕','💗'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('span');
+    h.className = 'heart';
+    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = (12 + Math.random() * 16) + 'px';
+    h.style.animationDuration = (14 + Math.random() * 20) + 's';
+    h.style.animationDelay = (Math.random() * 18) + 's';
+    h.style.color = ['#f43f5e','#fb7185','#fda4af','#fce7ea'][Math.floor(Math.random()*4)];
+    container.appendChild(h);
+  }
+})();
+
+// ── CHART DEFAULTS ──
+const ROSE    = '#f43f5e';
+const BLUSH   = '#fda4af';
+const DARK    = '#fb7185';
+const GRID_C  = 'rgba(244,63,94,0.07)';
+const TEXT_C  = '#7a4050';
+
+Chart.defaults.color = TEXT_C;
+Chart.defaults.borderColor = GRID_C;
+Chart.defaults.font.family = "Inter, -apple-system, sans-serif";
+
+// ── HOUR CHART ──
+const hourLabels = ['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
+const ashHour = [3531,2490,867,210,48,28,165,413,590,1203,2189,2146,2244,1816,2148,2111,2006,1503,1798,1929,2123,2263,3178,3925];
+const meHour  = [3060,2005,776,200,24,38,61,189,445,1033,1906,1652,1675,1510,1721,1593,1578,1241,1518,1646,1950,2188,3043,3366];
+
+new Chart(document.getElementById('hourChart'), {
+  type: 'bar',
+  data: {
+    labels: hourLabels,
+    datasets: [
+      { label: 'Ash', data: ashHour, backgroundColor: BLUSH + 'bb', borderRadius: 4 },
+      { label: 'Rav', data: meHour,  backgroundColor: ROSE  + 'aa', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { size: 11 }, color: '#9a6570' } } },
+    scales: {
+      x: { ticks: { font: { size: 9 } }, grid: { display: false } },
+      y: { ticks: { font: { size: 9 } } }
+    }
+  }
+});
+
+// ── MONTH CHART ──
+const months = ['Jul\'23','Aug\'23','Sep\'23','Oct\'23','Nov\'23','Dec\'23','Jan\'24','Feb\'24','Mar\'24','Apr\'24','May\'24','Jun\'24','Jul\'24','Aug\'24','Sep\'24','Oct\'24','Nov\'24','Dec\'24','Jan\'25','Feb\'25','Mar\'25','Apr\'25','May\'25','Jun\'25','Jul\'25','Aug\'25','Sep\'25','Oct\'25','Nov\'25','Dec\'25','Jan\'26','Feb\'26','Mar\'26'];
+const ashMonth = [0,167,235,988,950,456,636,521,1054,1341,554,1433,1226,1343,2587,3481,947,1572,1471,633,928,476,1375,2060,1841,875,995,2161,1959,801,2547,2241,1070];
+const meMonth  = [0,180,284,836,660,455,652,421,846,1326,543,1099,1159,1265,2330,3220,844,1342,1250,623,799,330,1174,1519,1504,812,908,1539,1605,612,1914,1534,833];
+
+new Chart(document.getElementById('monthChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Ash', data: ashMonth, backgroundColor: BLUSH + 'cc', borderRadius: 3 },
+      { label: 'Rav', data: meMonth,  backgroundColor: ROSE  + 'bb', borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { size: 11 }, color: '#9a6570' } } },
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } },
+      y: { stacked: true, ticks: { font: { size: 9 } } }
+    }
+  }
+});
+
+// ── SORRY CHART ──
+new Chart(document.getElementById('sorryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Rav (847)', 'Ash (597)'],
+    datasets: [{
+      data: [847, 597],
+      backgroundColor: [ROSE + 'dd', BLUSH + 'dd'],
+      borderWidth: 0,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: { legend: { position: 'right', labels: { font: { size: 11 }, color: '#9a6570' } } }
+  }
+});
+
+// ── REACT CHART ──
+new Chart(document.getElementById('reactChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Rav (342)', 'Ash (187)'],
+    datasets: [{
+      data: [342, 187],
+      backgroundColor: [ROSE + 'dd', BLUSH + 'dd'],
+      borderWidth: 0,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: { legend: { position: 'right', labels: { font: { size: 11 }, color: '#9a6570' } } }
+  }
+});
+</script>
+
+</body>
+</html>
